@@ -4,3 +4,5 @@ export { default as SearchBar } from "@/components/SearchBar";
 export { default as Card } from "@/components/Card";
 export { default as ClientLayout } from "@/components/ClientLayout";
 export { default as PrayerTimes } from "@/components/PrayerTimes";
+export { default as AuthProvider } from "@/components/AuthProvider";
+export { default as DashboardSidebar } from "@/components/DashboardSidebar";

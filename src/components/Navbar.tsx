@@ -3,9 +3,11 @@
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
+import { useSession, signOut } from "next-auth/react";
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { data: session, status } = useSession();
 
   const navigation = [
     { name: "الرئيسية", href: "/" },
@@ -31,7 +33,7 @@ export default function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:block">
-            <div className="flex items-baseline gap-1">
+            <div className="flex items-center gap-1">
               {navigation.map((item) => (
                 <Link
                   key={item.href}
@@ -41,6 +43,43 @@ export default function Navbar() {
                   {item.name}
                 </Link>
               ))}
+
+              {/* Auth Buttons */}
+              {status === "loading" ? (
+                <div className="px-3 py-2">
+                  <div className="w-16 h-4 bg-emerald-600 rounded animate-pulse"></div>
+                </div>
+              ) : session ? (
+                <div className="flex items-center gap-2 mr-2">
+                  <Link
+                    href="/dashboard"
+                    className="px-3 py-2 rounded-md text-sm font-medium bg-emerald-600 hover:bg-emerald-500 transition-colors"
+                  >
+                    لوحة التحكم
+                  </Link>
+                  <button
+                    onClick={() => signOut({ callbackUrl: "/" })}
+                    className="px-3 py-2 rounded-md text-sm font-medium hover:bg-emerald-600 transition-colors"
+                  >
+                    خروج
+                  </button>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 mr-2">
+                  <Link
+                    href="/login"
+                    className="px-3 py-2 rounded-md text-sm font-medium hover:bg-emerald-600 transition-colors"
+                  >
+                    دخول
+                  </Link>
+                  <Link
+                    href="/register"
+                    className="px-3 py-2 rounded-md text-sm font-medium bg-white text-emerald-700 hover:bg-gray-100 transition-colors"
+                  >
+                    تسجيل
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
 
@@ -74,6 +113,47 @@ export default function Navbar() {
                 {item.name}
               </Link>
             ))}
+
+            {/* Mobile Auth Buttons */}
+            <div className="border-t border-emerald-600 mt-2 pt-2">
+              {session ? (
+                <>
+                  <Link
+                    href="/dashboard"
+                    className="block px-3 py-2 rounded-md text-base font-medium bg-emerald-600 hover:bg-emerald-500"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    لوحة التحكم
+                  </Link>
+                  <button
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      signOut({ callbackUrl: "/" });
+                    }}
+                    className="block w-full text-right px-3 py-2 rounded-md text-base font-medium hover:bg-emerald-600"
+                  >
+                    تسجيل الخروج
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/login"
+                    className="block px-3 py-2 rounded-md text-base font-medium hover:bg-emerald-600"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    تسجيل الدخول
+                  </Link>
+                  <Link
+                    href="/register"
+                    className="block px-3 py-2 rounded-md text-base font-medium bg-white text-emerald-700 hover:bg-gray-100 mt-1"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    إنشاء حساب
+                  </Link>
+                </>
+              )}
+            </div>
           </div>
         </div>
       )}
